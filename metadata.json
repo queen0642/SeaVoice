@@ -1,0 +1,5 @@
+{
+  "name": "Sea Voice - AI Ocean Data Explorer",
+  "description": "An AI-powered conversational interface for ARGO ocean data discovery and visualization. Ask questions in natural language to explore and visualize complex oceanographic information.",
+  "requestFramePermissions": []
+}
