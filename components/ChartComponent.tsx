@@ -29,8 +29,8 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ type, title, data, xAxi
     const chartData = data as any[]; // To satisfy recharts data prop type
 
     return (
-        <div className="w-full h-full flex flex-col bg-night-sky/80 rounded-lg">
-            <h3 className="text-xl font-semibold text-lavender mb-4 text-center pt-4">{title}</h3>
+        <div className="w-full h-full flex flex-col bg-deep-ocean/80 rounded-lg">
+            <h3 className="text-xl font-semibold text-sea-foam mb-4 text-center pt-4">{title}</h3>
             <div className="flex-grow">
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart
@@ -42,26 +42,26 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ type, title, data, xAxi
                             bottom: 40,
                         }}
                     >
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(200, 162, 200, 0.2)" />
-                        <XAxis dataKey={xDataKey} stroke="#C8A2C8" tick={{ fill: '#C8A2C8' }} >
-                            <Label value={xAxisLabel} offset={-25} position="insideBottom" fill="#C8A2C8" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(119, 141, 169, 0.2)" />
+                        <XAxis dataKey={xDataKey} stroke="#778DA9" tick={{ fill: '#778DA9' }} >
+                            <Label value={xAxisLabel} offset={-25} position="insideBottom" fill="#778DA9" />
                         </XAxis>
                         <YAxis 
                             dataKey={yDataKey} 
-                            stroke="#C8A2C8" 
-                            tick={{ fill: '#C8A2C8' }} 
+                            stroke="#778DA9" 
+                            tick={{ fill: '#778DA9' }} 
                             reversed={isProfileChart}
                             domain={isProfileChart ? ['dataMax', 'dataMin'] : ['auto', 'auto']}
                         >
-                            <Label value={yAxisLabel} angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fill: '#C8A2C8' }} offset={-20}/>
+                            <Label value={yAxisLabel} angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fill: '#778DA9' }} offset={-20}/>
                         </YAxis>
                         <Tooltip
-                            contentStyle={{ backgroundColor: '#1A1A2D', border: '1px solid #E02C9A' }}
-                            labelStyle={{ color: '#E6E6FA' }}
-                            itemStyle={{ color: '#FF8C00' }}
+                            contentStyle={{ backgroundColor: '#0D1B2A', border: '1px solid #00BFFF' }}
+                            labelStyle={{ color: '#E0E1DD' }}
+                            itemStyle={{ color: '#00BFFF' }}
                         />
-                        <Legend verticalAlign="top" height={36} wrapperStyle={{ color: '#E6E6FA' }} />
-                        <Line type="monotone" dataKey="value" stroke="#FF8C00" strokeWidth={2} dot={false} name={xAxisLabel || 'Value'}/>
+                        <Legend verticalAlign="top" height={36} wrapperStyle={{ color: '#E0E1DD' }} />
+                        <Line type="monotone" dataKey="value" stroke="#00BFFF" strokeWidth={2} dot={false} name={xAxisLabel || 'Value'}/>
                     </LineChart>
                 </ResponsiveContainer>
             </div>

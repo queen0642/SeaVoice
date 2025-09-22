@@ -48,8 +48,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ title, data, worldAtlasUrl 
                 .data(world.features)
                 .enter().append('path')
                 .attr('d', path)
-                .attr('fill', '#2A2A4D') // dusk-purple
-                .attr('stroke', '#1A1A2D'); // night-sky
+                .attr('fill', '#1B263B') // ocean-blue
+                .attr('stroke', '#0D1B2A'); // deep-ocean
 
             // Draw points
             svg.append('g')
@@ -59,8 +59,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ title, data, worldAtlasUrl 
                 .attr('cx', d => projection([d.lon, d.lat])![0])
                 .attr('cy', d => projection([d.lon, d.lat])![1])
                 .attr('r', 3)
-                .attr('fill', '#00E5FF') // accent-cyan
-                .attr('stroke', '#1A1A2D') // night-sky
+                .attr('fill', '#00BFFF') // accent-cyan
+                .attr('stroke', '#0D1B2A') // deep-ocean
                 .style('opacity', 0.8)
                 .append('title')
                 .text(d => `ID: ${d.id}\nLat: ${d.lat}, Lon: ${d.lon}`);
@@ -72,8 +72,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ title, data, worldAtlasUrl 
     }, [data, world]);
 
     return (
-        <div className="w-full h-full flex flex-col bg-night-sky/80 rounded-lg">
-            <h3 className="text-xl font-semibold text-lavender pt-4 text-center">{title}</h3>
+        <div className="w-full h-full flex flex-col bg-deep-ocean/80 rounded-lg">
+            <h3 className="text-xl font-semibold text-sea-foam pt-4 text-center">{title}</h3>
             <div ref={containerRef} className="flex-grow w-full h-full p-2">
                 <svg ref={svgRef}></svg>
             </div>

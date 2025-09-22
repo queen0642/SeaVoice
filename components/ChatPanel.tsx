@@ -31,7 +31,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages, isLoading, onSendMessag
 
   return (
     <div className="flex flex-col h-full p-4">
-      <h2 className="text-lg font-semibold mb-4 text-lavender border-b border-accent-cyan/20 pb-2">Chat</h2>
+      <h2 className="text-lg font-semibold mb-4 text-sea-foam border-b border-accent-cyan/20 pb-2">Chat</h2>
       <div className="flex-1 overflow-y-auto pr-2 space-y-4">
         {messages.map((msg) => (
           <div
@@ -41,15 +41,15 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages, isLoading, onSendMessag
             }`}
           >
             {msg.sender === 'ai' && (
-              <div className="w-8 h-8 rounded-full bg-accent-cyan flex items-center justify-center flex-shrink-0 mt-1 shadow-lg shadow-cyan-glow">
-                <IconSparkles className="w-5 h-5 text-night-sky" />
+              <div className="w-8 h-8 rounded-full bg-accent-teal flex items-center justify-center flex-shrink-0 mt-1 shadow-lg shadow-cyan-glow">
+                <IconSparkles className="w-5 h-5 text-deep-ocean" />
               </div>
             )}
             <div
               className={`max-w-xs md:max-w-sm lg:max-w-md p-3 rounded-lg shadow-md ${
                 msg.sender === 'user'
-                  ? 'bg-accent-magenta text-white rounded-br-none'
-                  : 'bg-accent-cyan/80 text-night-sky rounded-bl-none'
+                  ? 'bg-accent-cyan text-deep-ocean rounded-br-none'
+                  : 'bg-accent-teal/80 text-sea-foam rounded-bl-none'
               }`}
             >
               <p className="text-sm font-medium whitespace-pre-wrap">{msg.text || <span className="inline-flex items-center"><LoadingSpinner size="sm"/></span>}</p>
@@ -65,13 +65,13 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages, isLoading, onSendMessag
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about ocean data..."
-            className="flex-1 p-2 bg-night-sky border border-accent-cyan/30 text-lavender rounded-lg focus:ring-2 focus:ring-accent-magenta focus:outline-none transition-shadow"
+            className="flex-1 p-2 bg-deep-ocean border border-accent-cyan/30 text-sea-foam rounded-lg focus:ring-2 focus:ring-accent-cyan focus:outline-none transition-shadow"
             disabled={isLoading}
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="p-2.5 bg-accent-orange rounded-lg hover:bg-orange-500 disabled:bg-light-slate/50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg shadow-orange-glow"
+            className="p-2.5 bg-accent-cyan rounded-lg hover:bg-cyan-400 disabled:bg-slate-gray/50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-glow"
           >
             {isLoading ? <LoadingSpinner size="sm" /> : <IconSend className="w-5 h-5 text-white" />}
           </button>

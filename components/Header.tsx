@@ -8,19 +8,19 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ language, setLanguage }) => {
   return (
-    <header className="flex items-center justify-between p-4 bg-dusk-purple/80 backdrop-blur-sm border-b border-magenta-glow shadow-lg">
+    <header className="flex items-center justify-between p-4 bg-ocean-blue/80 backdrop-blur-sm border-b border-cyan-glow shadow-lg">
       <div className="flex items-center space-x-3">
         <IconOcean className="w-8 h-8 text-accent-cyan" />
-        <h1 className="text-2xl font-bold text-lavender tracking-wider">Sea Voice</h1>
+        <h1 className="text-2xl font-bold text-sea-foam tracking-wider">Sea Voice</h1>
         <span className="text-xs font-semibold text-accent-cyan bg-accent-cyan/20 px-2 py-1 rounded-full">ARGO AI</span>
       </div>
       <div className="flex items-center space-x-2">
-        <label htmlFor="language-select" className="text-sm text-lilac">Language:</label>
+        <label htmlFor="language-select" className="text-sm text-slate-gray">Language:</label>
         <select
           id="language-select"
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
-          className="bg-night-sky border border-accent-cyan/30 text-lavender text-sm rounded-lg focus:ring-2 focus:ring-accent-magenta focus:border-accent-magenta block p-2"
+          className="bg-deep-ocean border border-accent-cyan/30 text-sea-foam text-sm rounded-lg focus:ring-2 focus:ring-accent-cyan focus:border-accent-cyan block p-2"
         >
           <option value="en">English</option>
           <option value="es">Spanish</option>

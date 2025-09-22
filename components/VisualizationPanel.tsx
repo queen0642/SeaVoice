@@ -13,14 +13,14 @@ interface VisualizationPanelProps {
 
 const WelcomeScreen: React.FC<{ title: string }> = ({ title }) => (
   <div className="flex flex-col items-center justify-center h-full text-center p-8">
-    <IconWave className="w-24 h-24 text-accent-orange mb-6" />
-    <h2 className="text-3xl font-bold mb-2 text-lavender">{title}</h2>
-    <p className="text-lilac max-w-md">
+    <IconWave className="w-24 h-24 text-accent-cyan mb-6" />
+    <h2 className="text-3xl font-bold mb-2 text-sea-foam">{title}</h2>
+    <p className="text-slate-gray max-w-md">
       I'm Sea Voice, your AI assistant for ARGO ocean data. Ask me to visualize data from the Indian Ocean.
     </p>
-    <div className="mt-8 text-left bg-night-sky/50 p-6 rounded-lg border border-accent-cyan/30 max-w-lg">
+    <div className="mt-8 text-left bg-deep-ocean/50 p-6 rounded-lg border border-accent-cyan/30 max-w-lg">
         <h3 className="text-lg font-semibold mb-3 text-accent-cyan">Example Prompts:</h3>
-        <ul className="space-y-2 text-lavender list-disc list-inside">
+        <ul className="space-y-2 text-sea-foam list-disc list-inside">
             <li>"Show me a temperature profile chart in the Indian Ocean."</li>
             <li>"Plot ARGO float locations in the Bay of Bengal."</li>
             <li>"Compare float density between the Arabian Sea and the Bay of Bengal."</li>
@@ -31,10 +31,10 @@ const WelcomeScreen: React.FC<{ title: string }> = ({ title }) => (
 );
 
 const LoadingScreen: React.FC<{ title: string }> = ({ title }) => (
-    <div className="flex flex-col items-center justify-center h-full text-center p-8 text-accent-orange">
+    <div className="flex flex-col items-center justify-center h-full text-center p-8 text-accent-cyan">
         <LoadingSpinner size="lg" />
-        <h2 className="text-2xl font-bold mt-6 text-lavender">{title}</h2>
-        <p className="text-lilac mt-2">Analyzing data and preparing your visualization...</p>
+        <h2 className="text-2xl font-bold mt-6 text-sea-foam">{title}</h2>
+        <p className="text-slate-gray mt-2">Analyzing data and preparing your visualization...</p>
     </div>
 );
 
@@ -69,12 +69,12 @@ const VisualizationPanel: React.FC<VisualizationPanelProps> = ({ visualization, 
   return (
     <div className="flex flex-col h-full w-full rounded-lg p-4">
       {showSummary && (
-        <div className="flex-shrink-0 mb-4 p-3 bg-night-sky/50 rounded-lg border border-accent-cyan/30">
+        <div className="flex-shrink-0 mb-4 p-3 bg-deep-ocean/50 rounded-lg border border-accent-cyan/30">
           <h4 className="flex items-center text-md font-semibold text-accent-cyan mb-2">
             <IconSparkles className="w-5 h-5 mr-2" />
             AI Analysis
           </h4>
-          <p className="text-sm text-lavender whitespace-pre-wrap">{summary}</p>
+          <p className="text-sm text-sea-foam whitespace-pre-wrap">{summary}</p>
         </div>
       )}
       <div className="flex-grow min-h-0">

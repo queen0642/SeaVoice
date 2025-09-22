@@ -75,13 +75,13 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-night-sky text-lavender font-sans">
+    <div className="flex flex-col h-screen bg-deep-ocean text-sea-foam font-sans">
       <Header language={language} setLanguage={setLanguage} />
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 overflow-hidden">
-        <div className="lg:col-span-2 flex flex-col h-full bg-dusk-purple/70 backdrop-blur-sm rounded-lg border border-accent-cyan/20 shadow-lg overflow-hidden">
+        <div className="lg:col-span-2 flex flex-col h-full bg-ocean-blue/70 backdrop-blur-sm rounded-lg border border-accent-cyan/20 shadow-lg overflow-hidden">
           <VisualizationPanel visualization={visualization} summary={summary} />
         </div>
-        <div className="lg:col-span-1 flex flex-col h-full bg-dusk-purple/70 backdrop-blur-sm rounded-lg border border-accent-cyan/20 shadow-lg overflow-hidden">
+        <div className="lg:col-span-1 flex flex-col h-full bg-ocean-blue/70 backdrop-blur-sm rounded-lg border border-accent-cyan/20 shadow-lg overflow-hidden">
           <ChatPanel
             messages={messages}
             isLoading={isLoading}
