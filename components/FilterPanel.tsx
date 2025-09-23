@@ -63,6 +63,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChange }) =>
             <option value="temperature">Temperature</option>
             <option value="salinity">Salinity</option>
             <option value="oxygen">Oxygen</option>
+            <option value="chlorophyll">Chlorophyll</option>
+            <option value="nitrate">Nitrate</option>
+            <option value="ph">pH</option>
           </select>
         </div>
       </div>

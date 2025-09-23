@@ -10,6 +10,8 @@ export enum VisualizationType {
   TIME_SERIES_CHART = 'time_series_chart',
   MAP_COMPARISON = 'map_comparison',
   DENSITY_MAP = 'density_map',
+  TRAJECTORY_MAP = 'trajectory_map',
+  TABLE_VIEW = 'table_view',
   WELCOME = 'welcome',
   LOADING = 'loading',
 }
@@ -30,11 +32,22 @@ export interface MapData {
   id: string;
 }
 
+export interface Trajectory {
+    id: string;
+    path: {
+        lat: number;
+        lon: number;
+        timestamp: string;
+    }[];
+}
+
 export interface DensityMapData {
     lat: number;
     lon: number;
     density: number; // 0 to 1
 }
+
+export type TableData = Record<string, string | number>[];
 
 export interface Filters {
   dateRange: { start: string; end: string };
@@ -63,6 +76,12 @@ interface MapVisualization {
   data: MapData[];
 }
 
+interface TrajectoryMapVisualization {
+    type: VisualizationType.TRAJECTORY_MAP;
+    title: string;
+    data: Trajectory[];
+}
+
 interface DensityMapVisualization {
     type: VisualizationType.DENSITY_MAP;
     title: string;
@@ -83,6 +102,12 @@ interface MapComparisonVisualization {
     };
 }
 
+interface TableVisualization {
+    type: VisualizationType.TABLE_VIEW;
+    title: string;
+    data: TableData;
+}
+
 interface LoadingVisualization {
   type: VisualizationType.LOADING;
   title: string;
@@ -101,5 +126,7 @@ export type VisualizationData =
   | TimeSeriesChartVisualization
   | MapComparisonVisualization
   | DensityMapVisualization
+  | TrajectoryMapVisualization
+  | TableVisualization
   | LoadingVisualization
   | WelcomeVisualization;
