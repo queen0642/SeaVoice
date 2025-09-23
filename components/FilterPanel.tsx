@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFilter, IconCalendar, IconGlobe, IconRuler, IconId } from './ui/Icon';
+import { IconFilter, IconCalendar, IconGlobe, IconRuler, IconId, IconWave } from './ui/Icon';
 import { Filters } from '../types';
 
 interface FilterPanelProps {
@@ -105,7 +105,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChange }) =>
           </div>
         </div>
         <div>
-          <label htmlFor="sensorType" className="text-sm font-medium text-slate-gray block mb-1">
+          <label htmlFor="sensorType" className="text-sm font-medium text-slate-gray flex items-center mb-1">
+            <IconWave className="w-4 h-4 mr-2" />
             Sensor Type
           </label>
           <select
