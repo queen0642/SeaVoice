@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Header from './components/Header';
 import ChatPanel from './components/ChatPanel';
 import VisualizationPanel from './components/VisualizationPanel';
-import { Message, VisualizationData, VisualizationType } from './types';
+import FilterPanel from './components/FilterPanel';
+import { Message, VisualizationData, VisualizationType, Filters } from './types';
 import { sendMessageStream } from './services/geminiService';
 
 const App: React.FC = () => {
@@ -15,6 +16,10 @@ const App: React.FC = () => {
   });
   const [summary, setSummary] = useState<string | null>(null);
   const [language, setLanguage] = useState('en');
+  const [filters, setFilters] = useState<Filters>({
+    dateRange: { start: '', end: '' },
+    sensorType: 'all',
+  });
 
   const handleSendMessage = async (messageText: string) => {
     if (!messageText.trim()) return;
@@ -31,7 +36,7 @@ const App: React.FC = () => {
     setMessages(prev => [...prev, { id: aiMessageId, text: '', sender: 'ai' }]);
 
     try {
-      const stream = sendMessageStream(messageText, messages, language);
+      const stream = sendMessageStream(messageText, messages, language, filters);
       for await (const chunk of stream) {
         aiResponseText += chunk;
         setMessages(prev => prev.map(msg => 
@@ -82,6 +87,7 @@ const App: React.FC = () => {
           <VisualizationPanel visualization={visualization} summary={summary} />
         </div>
         <div className="lg:col-span-1 flex flex-col h-full bg-ocean-blue/70 backdrop-blur-sm rounded-lg border border-accent-cyan/20 shadow-lg overflow-hidden">
+          <FilterPanel filters={filters} onFilterChange={setFilters} />
           <ChatPanel
             messages={messages}
             isLoading={isLoading}

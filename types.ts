@@ -9,6 +9,7 @@ export enum VisualizationType {
   MAP = 'map',
   TIME_SERIES_CHART = 'time_series_chart',
   MAP_COMPARISON = 'map_comparison',
+  DENSITY_MAP = 'density_map',
   WELCOME = 'welcome',
   LOADING = 'loading',
 }
@@ -27,6 +28,17 @@ export interface MapData {
   lat: number;
   lon: number;
   id: string;
+}
+
+export interface DensityMapData {
+    lat: number;
+    lon: number;
+    density: number; // 0 to 1
+}
+
+export interface Filters {
+  dateRange: { start: string; end: string };
+  sensorType: string;
 }
 
 interface ProfileChartVisualization {
@@ -49,6 +61,12 @@ interface MapVisualization {
   type: VisualizationType.MAP;
   title: string;
   data: MapData[];
+}
+
+interface DensityMapVisualization {
+    type: VisualizationType.DENSITY_MAP;
+    title: string;
+    data: DensityMapData[];
 }
 
 interface MapComparisonData {
@@ -82,5 +100,6 @@ export type VisualizationData =
   | MapVisualization
   | TimeSeriesChartVisualization
   | MapComparisonVisualization
+  | DensityMapVisualization
   | LoadingVisualization
   | WelcomeVisualization;

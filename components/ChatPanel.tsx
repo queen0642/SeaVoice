@@ -30,7 +30,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages, isLoading, onSendMessag
   };
 
   return (
-    <div className="flex flex-col h-full p-4">
+    <div className="flex flex-col flex-1 p-4 min-h-0">
       <h2 className="text-lg font-semibold mb-4 text-sea-foam border-b border-accent-cyan/20 pb-2">Chat</h2>
       <div className="flex-1 overflow-y-auto pr-2 space-y-4">
         {messages.map((msg) => (

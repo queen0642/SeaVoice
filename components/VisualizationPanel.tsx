@@ -3,6 +3,7 @@ import { VisualizationData, VisualizationType } from '../types';
 import ChartComponent from './ChartComponent';
 import MapComponent from './MapComponent';
 import MapComparisonComponent from './MapComparisonComponent';
+import DensityMapComponent from './DensityMapComponent';
 import { IconSparkles, IconWave } from './ui/Icon';
 import LoadingSpinner from './ui/LoadingSpinner';
 
@@ -23,6 +24,7 @@ const WelcomeScreen: React.FC<{ title: string }> = ({ title }) => (
         <ul className="space-y-2 text-sea-foam list-disc list-inside">
             <li>"Show me a temperature profile chart in the Indian Ocean."</li>
             <li>"Plot ARGO float locations in the Bay of Bengal."</li>
+            <li>"Show the data density for salinity sensors in the Arabian Sea."</li>
             <li>"Compare float density between the Arabian Sea and the Bay of Bengal."</li>
             <li>"Generate a time series of sea surface temperature near Sri Lanka."</li>
         </ul>
@@ -45,7 +47,8 @@ const VisualizationPanel: React.FC<VisualizationPanelProps> = ({ visualization, 
     visualization.type === VisualizationType.PROFILE_CHART ||
     visualization.type === VisualizationType.TIME_SERIES_CHART ||
     visualization.type === VisualizationType.MAP ||
-    visualization.type === VisualizationType.MAP_COMPARISON
+    visualization.type === VisualizationType.MAP_COMPARISON ||
+    visualization.type === VisualizationType.DENSITY_MAP
   );
 
   const renderVisualization = () => {
@@ -61,6 +64,8 @@ const VisualizationPanel: React.FC<VisualizationPanelProps> = ({ visualization, 
         return <MapComponent {...visualization} />;
       case VisualizationType.MAP_COMPARISON:
         return <MapComparisonComponent {...visualization} />;
+      case VisualizationType.DENSITY_MAP:
+        return <DensityMapComponent {...visualization} />;
       default:
         return <WelcomeScreen title="Unsupported Visualization" />;
     }
