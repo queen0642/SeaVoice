@@ -67,11 +67,13 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages, isLoading, onSendMessag
             placeholder="Ask about ocean data..."
             className="flex-1 p-2 bg-deep-ocean border border-accent-cyan/30 text-sea-foam rounded-lg focus:ring-2 focus:ring-accent-cyan focus:outline-none transition-shadow"
             disabled={isLoading}
+            aria-label="Chat input for asking about ocean data"
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
             className="p-2.5 bg-accent-cyan rounded-lg hover:bg-cyan-400 disabled:bg-slate-gray/50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-glow"
+            aria-label="Send message"
           >
             {isLoading ? <LoadingSpinner size="sm" /> : <IconSend className="w-5 h-5 text-white" />}
           </button>

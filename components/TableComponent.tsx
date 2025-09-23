@@ -22,7 +22,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ title, data }) => {
         <div className="w-full h-full flex flex-col bg-deep-ocean/80 rounded-lg p-4">
             <h3 className="text-xl font-semibold text-sea-foam mb-4 text-center">{title}</h3>
             <div className="flex-grow overflow-auto rounded-lg border border-accent-cyan/20">
-                <table className="min-w-full divide-y divide-accent-cyan/20">
+                <table className="min-w-full divide-y divide-accent-cyan/20" aria-label={title}>
                     <thead className="bg-ocean-blue/70 sticky top-0 backdrop-blur-sm">
                         <tr>
                             {headers.map((header) => (

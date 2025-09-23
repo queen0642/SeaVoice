@@ -19,16 +19,16 @@ const WelcomeScreen: React.FC<{ title: string }> = ({ title }) => (
     <IconWave className="w-24 h-24 text-accent-cyan mb-6" />
     <h2 className="text-3xl font-bold mb-2 text-sea-foam">{title}</h2>
     <p className="text-slate-gray max-w-md">
-      I'm Sea Voice, your AI assistant for ARGO ocean data. Ask me to visualize data from the Indian Ocean.
+      I'm Sea Voice, your AI assistant for ARGO ocean data. Ask me to visualize data from oceans around the world.
     </p>
     <div className="mt-8 text-left bg-deep-ocean/50 p-6 rounded-lg border border-accent-cyan/30 max-w-lg">
         <h3 className="text-lg font-semibold mb-3 text-accent-cyan">Example Prompts:</h3>
         <ul className="space-y-2 text-sea-foam list-disc list-inside">
-            <li>"Show me a temperature profile chart in the Indian Ocean."</li>
-            <li>"Plot the trajectory for float 12345."</li>
-            <li>"Show the data density for salinity sensors in the Arabian Sea."</li>
-            <li>"Compare float density between the Arabian Sea and the Bay of Bengal."</li>
-            <li>"Give me a table of the latest float positions."</li>
+            <li>"Show me a temperature profile chart in the Pacific Ocean."</li>
+            <li>"Plot the trajectory for float 12345 in the Atlantic."</li>
+            <li>"Show the data density for salinity sensors worldwide."</li>
+            <li>"Compare float density between the North Atlantic and the South Pacific."</li>
+            <li>"Give me a table of the latest float positions with timestamps."</li>
         </ul>
     </div>
   </div>
@@ -148,6 +148,7 @@ const VisualizationPanel: React.FC<VisualizationPanelProps> = ({ visualization, 
                     onClick={handleDownload}
                     className="ml-4 p-2 bg-accent-teal rounded-lg hover:bg-teal-400 disabled:bg-slate-gray/50 transition-all duration-300 transform hover:scale-105 shadow-md flex items-center"
                     title="Download data as CSV"
+                    aria-label="Download visualization data as CSV"
                 >
                     <IconDownload className="w-5 h-5 text-white" />
                     <span className="ml-2 text-sm text-white font-semibold">Export CSV</span>

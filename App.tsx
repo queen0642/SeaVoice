@@ -6,6 +6,8 @@ import FilterPanel from './components/FilterPanel';
 import { Message, VisualizationData, VisualizationType, Filters } from './types';
 import { sendMessageStream } from './services/geminiService';
 
+const CHAT_HISTORY_KEY = 'seaVoiceChatHistory';
+
 const App: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +21,7 @@ const App: React.FC = () => {
   const [filters, setFilters] = useState<Filters>({
     dateRange: { start: '', end: '' },
     sensorType: 'all',
+    region: 'all',
   });
 
   const handleSendMessage = async (messageText: string) => {
@@ -79,9 +82,74 @@ const App: React.FC = () => {
     }
   };
 
+  const handleSaveChat = () => {
+    const stateToSave = {
+      messages,
+      visualization,
+      summary,
+      filters,
+      language,
+    };
+    try {
+      localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(stateToSave));
+      alert('Chat history saved successfully!');
+    } catch (error) {
+      console.error("Failed to save chat history:", error);
+      alert('Could not save chat history. Local storage might be full.');
+    }
+  };
+
+  const handleLoadChat = () => {
+    const savedStateJSON = localStorage.getItem(CHAT_HISTORY_KEY);
+    if (savedStateJSON) {
+      try {
+        const savedState = JSON.parse(savedStateJSON);
+        if (savedState.messages && savedState.visualization && savedState.filters && savedState.language) {
+          setMessages(savedState.messages);
+          setVisualization(savedState.visualization);
+          setSummary(savedState.summary || null);
+          setFilters(savedState.filters);
+          setLanguage(savedState.language);
+          alert('Chat history loaded successfully!');
+        } else {
+          alert('Saved data is incomplete or invalid.');
+        }
+      } catch (error) {
+        console.error("Failed to parse chat history:", error);
+        alert('Could not load chat history. The data may be corrupted.');
+        localStorage.removeItem(CHAT_HISTORY_KEY);
+      }
+    } else {
+      alert('No saved chat history found.');
+    }
+  };
+
+  const handleClearChat = () => {
+    if (window.confirm('Are you sure you want to start a new chat? This will clear all current messages and visualizations.')) {
+      setMessages([]);
+      setVisualization({
+        type: VisualizationType.WELCOME,
+        title: 'Welcome to Sea Voice',
+        data: null,
+      });
+      setSummary(null);
+      setFilters({
+        dateRange: { start: '', end: '' },
+        sensorType: 'all',
+        region: 'all',
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen bg-deep-ocean text-sea-foam font-sans">
-      <Header language={language} setLanguage={setLanguage} />
+      <Header
+        language={language}
+        setLanguage={setLanguage}
+        onSaveChat={handleSaveChat}
+        onLoadChat={handleLoadChat}
+        onClearChat={handleClearChat}
+      />
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 overflow-hidden">
         <div className="lg:col-span-2 flex flex-col h-full bg-ocean-blue/70 backdrop-blur-sm rounded-lg border border-accent-cyan/20 shadow-lg overflow-hidden">
           <VisualizationPanel visualization={visualization} summary={summary} />

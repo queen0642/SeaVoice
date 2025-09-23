@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import { FeatureCollection } from 'geojson';
 import { Trajectory } from '../types';
+import InfoModal from './ui/InfoModal';
 
 interface TrajectoryMapComponentProps {
     title: string;
@@ -10,10 +11,19 @@ interface TrajectoryMapComponentProps {
     worldAtlasUrl?: string;
 }
 
+type TrajectoryPoint = {
+    lat: number;
+    lon: number;
+    timestamp: string;
+    id: string;
+};
+
+
 const TrajectoryMapComponent: React.FC<TrajectoryMapComponentProps> = ({ title, data, worldAtlasUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json' }) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [world, setWorld] = useState<FeatureCollection | null>(null);
+    const [selectedPoint, setSelectedPoint] = useState<TrajectoryPoint | null>(null);
 
     useEffect(() => {
         d3.json(worldAtlasUrl).then((topology: any) => {
@@ -33,7 +43,9 @@ const TrajectoryMapComponent: React.FC<TrajectoryMapComponentProps> = ({ title, 
             const height = width * 0.6;
 
             svg.selectAll("*").remove();
-            svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`);
+            svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`)
+                .attr('role', 'img')
+                .attr('aria-label', title);
 
             const projection = d3.geoMercator().fitSize([width, height], world);
             const pathGenerator = d3.geoPath().projection(projection);
@@ -65,7 +77,7 @@ const TrajectoryMapComponent: React.FC<TrajectoryMapComponentProps> = ({ title, 
                 .style('opacity', 0.7);
 
             // Flatten data for points
-            const allPoints = data.flatMap(traj => traj.path.map(p => ({ ...p, id: traj.id })));
+            const allPoints: TrajectoryPoint[] = data.flatMap(traj => traj.path.map(p => ({ ...p, id: traj.id })));
             
             // Draw points on trajectories
             g.append('g')
@@ -78,6 +90,8 @@ const TrajectoryMapComponent: React.FC<TrajectoryMapComponentProps> = ({ title, 
                 .attr('fill', '#4DB6AC') // accent-teal
                 .attr('stroke', '#0D1B2A')
                 .style('cursor', 'pointer')
+                .attr('tabindex', 0)
+                .attr('aria-label', d => `Trajectory point for float ${d.id} at ${new Date(d.timestamp).toLocaleString()}`)
                 .on('mouseover', (event, d) => {
                     tooltip
                         .style('opacity', 1)
@@ -94,6 +108,15 @@ const TrajectoryMapComponent: React.FC<TrajectoryMapComponentProps> = ({ title, 
                 })
                 .on('mouseout', () => {
                     tooltip.style('opacity', 0);
+                })
+                .on('click', (event, d) => {
+                    setSelectedPoint(d);
+                })
+                .on('keydown', (event, d) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setSelectedPoint(d);
+                    }
                 });
 
             const zoom = d3.zoom<SVGSVGElement, unknown>()
@@ -108,7 +131,7 @@ const TrajectoryMapComponent: React.FC<TrajectoryMapComponentProps> = ({ title, 
         resizeObserver.observe(containerRef.current);
         return () => resizeObserver.disconnect();
 
-    }, [data, world]);
+    }, [data, world, title]);
 
     return (
         <div className="w-full h-full flex flex-col bg-deep-ocean/80 rounded-lg">
@@ -117,6 +140,12 @@ const TrajectoryMapComponent: React.FC<TrajectoryMapComponentProps> = ({ title, 
                 <svg ref={svgRef}></svg>
                 <div className="map-tooltip absolute opacity-0 pointer-events-none bg-deep-ocean text-sea-foam text-sm p-2 rounded-md border border-accent-cyan/50 shadow-lg transition-opacity duration-200"></div>
             </div>
+            <InfoModal 
+                isOpen={!!selectedPoint}
+                onClose={() => setSelectedPoint(null)}
+                title={`Details for Float ${selectedPoint?.id}`}
+                data={selectedPoint}
+            />
         </div>
     );
 };

@@ -52,6 +52,7 @@ export type TableData = Record<string, string | number>[];
 export interface Filters {
   dateRange: { start: string; end: string };
   sensorType: string;
+  region: string;
 }
 
 interface ProfileChartVisualization {

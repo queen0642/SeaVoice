@@ -6,6 +6,7 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import { FeatureCollection } from 'geojson';
 import { DensityMapData } from '../types';
+import InfoModal from './ui/InfoModal';
 
 interface DensityMapComponentProps {
     title: string;
@@ -17,6 +18,7 @@ const DensityMapComponent: React.FC<DensityMapComponentProps> = ({ title, data, 
     const svgRef = useRef<SVGSVGElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [world, setWorld] = useState<FeatureCollection | null>(null);
+    const [selectedPoint, setSelectedPoint] = useState<DensityMapData | null>(null);
 
     useEffect(() => {
         json(worldAtlasUrl).then((topology: any) => {
@@ -37,7 +39,9 @@ const DensityMapComponent: React.FC<DensityMapComponentProps> = ({ title, data, 
 
             svg.selectAll("*").remove();
 
-            svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`);
+            svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`)
+                .attr('role', 'img')
+                .attr('aria-label', title);
 
             const projection = geoMercator().fitSize([width, height], world);
             const path = geoPath().projection(projection);
@@ -69,6 +73,8 @@ const DensityMapComponent: React.FC<DensityMapComponentProps> = ({ title, data, 
                 .style('opacity', 0.7)
                 .style('mix-blend-mode', 'lighten')
                 .style('cursor', 'pointer')
+                .attr('tabindex', 0)
+                .attr('aria-label', d => `Density data point at lat ${d.lat.toFixed(2)}, lon ${d.lon.toFixed(2)} with density ${d.density.toFixed(3)}`)
                 .on('mouseover', (event, d) => {
                     tooltip
                         .style('opacity', 1)
@@ -86,6 +92,15 @@ const DensityMapComponent: React.FC<DensityMapComponentProps> = ({ title, data, 
                 })
                 .on('mouseout', () => {
                     tooltip.style('opacity', 0);
+                })
+                .on('click', (event, d) => {
+                    setSelectedPoint(d);
+                })
+                .on('keydown', (event, d) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setSelectedPoint(d);
+                    }
                 });
 
             // Add Legend
@@ -144,7 +159,7 @@ const DensityMapComponent: React.FC<DensityMapComponentProps> = ({ title, data, 
         resizeObserver.observe(containerRef.current);
         return () => resizeObserver.disconnect();
 
-    }, [data, world]);
+    }, [data, world, title]);
 
     return (
         <div className="w-full h-full flex flex-col bg-deep-ocean/80 rounded-lg">
@@ -153,6 +168,12 @@ const DensityMapComponent: React.FC<DensityMapComponentProps> = ({ title, data, 
                 <svg ref={svgRef}></svg>
                 <div className="density-tooltip absolute opacity-0 pointer-events-none bg-deep-ocean text-sea-foam text-sm p-2 rounded-md border border-accent-cyan/50 shadow-lg transition-opacity duration-200"></div>
             </div>
+            <InfoModal 
+                isOpen={!!selectedPoint}
+                onClose={() => setSelectedPoint(null)}
+                title="Data Point Details"
+                data={selectedPoint}
+            />
         </div>
     );
 };

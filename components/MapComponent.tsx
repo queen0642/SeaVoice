@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import { FeatureCollection } from 'geojson';
 import { MapData } from '../types';
+import InfoModal from './ui/InfoModal';
 
 interface MapComponentProps {
     title: string;
@@ -14,6 +15,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ title, data, worldAtlasUrl 
     const svgRef = useRef<SVGSVGElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [world, setWorld] = useState<FeatureCollection | null>(null);
+    const [selectedPoint, setSelectedPoint] = useState<MapData | null>(null);
 
     useEffect(() => {
         d3.json(worldAtlasUrl).then((topology: any) => {
@@ -34,7 +36,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ title, data, worldAtlasUrl 
 
             svg.selectAll("*").remove();
 
-            svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`);
+            svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`)
+                .attr('role', 'img')
+                .attr('aria-label', title);
 
             const projection = d3.geoMercator()
                 .fitSize([width, height], world);
@@ -65,6 +69,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ title, data, worldAtlasUrl 
                 .attr('stroke', '#0D1B2A') // deep-ocean
                 .style('opacity', 0.8)
                 .style('cursor', 'pointer')
+                .attr('tabindex', 0)
+                .attr('aria-label', d => `Data point for float ${d.id}`)
                 .on('mouseover', (event, d) => {
                     tooltip
                         .style('opacity', 1)
@@ -82,6 +88,15 @@ const MapComponent: React.FC<MapComponentProps> = ({ title, data, worldAtlasUrl 
                 })
                 .on('mouseout', () => {
                     tooltip.style('opacity', 0);
+                })
+                .on('click', (event, d) => {
+                    setSelectedPoint(d);
+                })
+                .on('keydown', (event, d) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setSelectedPoint(d);
+                    }
                 });
 
             // Zoom functionality
@@ -97,7 +112,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ title, data, worldAtlasUrl 
         resizeObserver.observe(containerRef.current);
         return () => resizeObserver.disconnect();
 
-    }, [data, world]);
+    }, [data, world, title]);
 
     return (
         <div className="w-full h-full flex flex-col bg-deep-ocean/80 rounded-lg">
@@ -106,6 +121,12 @@ const MapComponent: React.FC<MapComponentProps> = ({ title, data, worldAtlasUrl 
                 <svg ref={svgRef}></svg>
                 <div className="map-tooltip absolute opacity-0 pointer-events-none bg-deep-ocean text-sea-foam text-sm p-2 rounded-md border border-accent-cyan/50 shadow-lg transition-opacity duration-200"></div>
             </div>
+            <InfoModal 
+                isOpen={!!selectedPoint}
+                onClose={() => setSelectedPoint(null)}
+                title={`Details for Float ${selectedPoint?.id}`}
+                data={selectedPoint}
+            />
         </div>
     );
 };

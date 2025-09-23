@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFilter, IconCalendar } from './ui/Icon';
+import { IconFilter, IconCalendar, IconGlobe } from './ui/Icon';
 import { Filters } from '../types';
 
 interface FilterPanelProps {
@@ -18,6 +18,10 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChange }) =>
   const handleSensorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onFilterChange({ ...filters, sensorType: e.target.value });
   };
+  
+  const handleRegionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onFilterChange({ ...filters, region: e.target.value });
+  };
 
   return (
     <div className="p-4 border-b border-accent-cyan/20 flex-shrink-0">
@@ -26,6 +30,28 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChange }) =>
         Data Filters
       </h2>
       <div className="space-y-4">
+        <div>
+          <label htmlFor="region-select" className="text-sm font-medium text-slate-gray flex items-center mb-1">
+            <IconGlobe className="w-4 h-4 mr-2" />
+            Region
+          </label>
+           <select
+            id="region-select"
+            value={filters.region}
+            onChange={handleRegionChange}
+            className="w-full p-2 bg-deep-ocean border border-accent-cyan/30 text-sea-foam text-sm rounded-lg focus:ring-2 focus:ring-accent-cyan focus:outline-none"
+            aria-label="Filter data by geographic region"
+          >
+            <option value="all">All Oceans</option>
+            <option value="Pacific Ocean">Pacific Ocean</option>
+            <option value="Atlantic Ocean">Atlantic Ocean</option>
+            <option value="Indian Ocean">Indian Ocean</option>
+            <option value="Southern Ocean">Southern Ocean</option>
+            <option value="Arctic Ocean">Arctic Ocean</option>
+            <option value="Mediterranean Sea">Mediterranean Sea</option>
+            <option value="Caribbean Sea">Caribbean Sea</option>
+          </select>
+        </div>
         <div>
           <label className="text-sm font-medium text-slate-gray flex items-center mb-1">
             <IconCalendar className="w-4 h-4 mr-2" />
@@ -58,6 +84,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChange }) =>
             value={filters.sensorType}
             onChange={handleSensorChange}
             className="w-full p-2 bg-deep-ocean border border-accent-cyan/30 text-sea-foam text-sm rounded-lg focus:ring-2 focus:ring-accent-cyan focus:outline-none"
+            aria-label="Filter data by sensor type"
           >
             <option value="all">All</option>
             <option value="temperature">Temperature</option>

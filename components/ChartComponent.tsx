@@ -29,8 +29,8 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ type, title, data, xAxi
     const chartData = data as any[]; // To satisfy recharts data prop type
 
     return (
-        <div className="w-full h-full flex flex-col bg-deep-ocean/80 rounded-lg">
-            <h3 className="text-xl font-semibold text-sea-foam mb-4 text-center pt-4">{title}</h3>
+        <div className="w-full h-full flex flex-col bg-deep-ocean/80 rounded-lg" role="figure" aria-label={title}>
+            <h3 className="text-xl font-semibold text-sea-foam mb-4 text-center pt-4" aria-hidden="true">{title}</h3>
             <div className="flex-grow">
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart
