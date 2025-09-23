@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Header from './components/Header';
 import ChatPanel from './components/ChatPanel';
@@ -143,6 +144,10 @@ const App: React.FC = () => {
     }
   };
 
+  const handleGoHome = () => {
+    setShowLanding(true);
+  };
+
   if (showLanding) {
     return <LandingPage onStart={() => setShowLanding(false)} />;
   }
@@ -155,6 +160,7 @@ const App: React.FC = () => {
         onSaveChat={handleSaveChat}
         onLoadChat={handleLoadChat}
         onClearChat={handleClearChat}
+        onGoHome={handleGoHome}
       />
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 overflow-hidden">
         <div className="lg:col-span-2 flex flex-col h-full bg-ocean-blue/70 backdrop-blur-sm rounded-lg border border-accent-cyan/20 shadow-lg overflow-hidden">

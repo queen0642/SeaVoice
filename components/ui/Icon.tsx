@@ -70,6 +70,12 @@ export const IconGlobe: React.FC<IconProps> = ({ className }) => (
     </svg>
 );
 
+export const IconHome: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955a.75.75 0 011.06 0l8.955 8.955M3.75 12v6.75a2.25 2.25 0 002.25 2.25h12A2.25 2.25 0 0020.25 18.75V12M8.25 21V15a.75.75 0 01.75-.75h6a.75.75 0 01.75.75v6" />
+  </svg>
+);
+
 export const IconMap: React.FC<IconProps> = ({ className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.5-12v8.25m-6.75 2.25h3.375m-3.375 0h3.375M9 18.75h3.375m-3.375 0h3.375M6.75 21v-5.25A2.25 2.25 0 019 13.5h6a2.25 2.25 0 012.25 2.25V21M6.75 21H3v-5.25a2.25 2.25 0 012.25-2.25H18v5.25h-3.75M6.75 21H18M15 6.75v-5.25A2.25 2.25 0 0012.75 0H9A2.25 2.25 0 006.75 2.25v5.25" />

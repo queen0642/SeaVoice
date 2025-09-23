@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { IconOcean, IconSave, IconFolderOpen, IconTrash } from './ui/Icon';
+import { IconOcean, IconSave, IconFolderOpen, IconTrash, IconHome } from './ui/Icon';
 
 interface HeaderProps {
   language: string;
@@ -7,12 +8,17 @@ interface HeaderProps {
   onSaveChat: () => void;
   onLoadChat: () => void;
   onClearChat: () => void;
+  onGoHome: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ language, setLanguage, onSaveChat, onLoadChat, onClearChat }) => {
+const Header: React.FC<HeaderProps> = ({ language, setLanguage, onSaveChat, onLoadChat, onClearChat, onGoHome }) => {
   return (
     <header className="flex items-center justify-between p-4 bg-ocean-blue/80 backdrop-blur-sm border-b border-cyan-glow shadow-lg">
       <div className="flex items-center space-x-3">
+        <button onClick={onGoHome} title="Go to Homepage" aria-label="Go to Homepage" className="p-2 text-sea-foam hover:text-accent-cyan hover:bg-slate-gray/20 rounded-lg transition-colors">
+            <IconHome className="w-6 h-6" />
+        </button>
+        <div className="h-6 w-px bg-slate-gray/50"></div>
         <IconOcean className="w-8 h-8 text-accent-cyan" />
         <h1 className="text-2xl font-bold text-sea-foam tracking-wider">Sea Voice</h1>
         <span className="text-xs font-semibold text-accent-cyan bg-accent-cyan/20 px-2 py-1 rounded-full">ARGO AI</span>
