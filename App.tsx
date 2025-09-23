@@ -5,10 +5,12 @@ import VisualizationPanel from './components/VisualizationPanel';
 import FilterPanel from './components/FilterPanel';
 import { Message, VisualizationData, VisualizationType, Filters } from './types';
 import { sendMessageStream } from './services/geminiService';
+import LandingPage from './components/LandingPage';
 
 const CHAT_HISTORY_KEY = 'seaVoiceChatHistory';
 
 const App: React.FC = () => {
+  const [showLanding, setShowLanding] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [visualization, setVisualization] = useState<VisualizationData>({
@@ -141,8 +143,12 @@ const App: React.FC = () => {
     }
   };
 
+  if (showLanding) {
+    return <LandingPage onStart={() => setShowLanding(false)} />;
+  }
+
   return (
-    <div className="flex flex-col h-screen bg-deep-ocean text-sea-foam font-sans">
+    <div className="flex flex-col h-screen text-sea-foam font-sans">
       <Header
         language={language}
         setLanguage={setLanguage}
