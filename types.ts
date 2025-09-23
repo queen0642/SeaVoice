@@ -4,16 +4,32 @@ export interface Message {
   sender: 'user' | 'ai';
 }
 
+export interface Filters {
+  dateRange: {
+    start: string;
+    end: string;
+  };
+  sensorType: string;
+  region: string;
+  depthRange: {
+    min: string;
+    max: string;
+  };
+  floatId: string;
+}
+
+export type Persona = 'ocean_expert' | 'summarizer' | 'conversational_expert';
+
 export enum VisualizationType {
+  WELCOME = 'welcome',
+  LOADING = 'loading',
   PROFILE_CHART = 'profile_chart',
-  MAP = 'map',
   TIME_SERIES_CHART = 'time_series_chart',
+  MAP = 'map',
   MAP_COMPARISON = 'map_comparison',
   DENSITY_MAP = 'density_map',
   TRAJECTORY_MAP = 'trajectory_map',
   TABLE_VIEW = 'table_view',
-  WELCOME = 'welcome',
-  LOADING = 'loading',
 }
 
 export interface ProfileChartData {
@@ -22,7 +38,7 @@ export interface ProfileChartData {
 }
 
 export interface TimeSeriesChartData {
-  date: string; // e.g., "2024-01-15"
+  date: string;
   value: number;
 }
 
@@ -32,30 +48,38 @@ export interface MapData {
   id: string;
 }
 
-export interface Trajectory {
-    id: string;
-    path: {
-        lat: number;
-        lon: number;
-        timestamp: string;
-    }[];
-}
-
 export interface DensityMapData {
     lat: number;
     lon: number;
-    density: number; // 0 to 1
+    density: number;
 }
 
-export type TableData = Record<string, string | number>[];
-
-export interface Filters {
-  dateRange: { start: string; end: string };
-  sensorType: string;
-  region: string;
+export interface TrajectoryPoint {
+  lat: number;
+  lon: number;
+  timestamp: string;
 }
 
-interface ProfileChartVisualization {
+export interface Trajectory {
+  id: string;
+  path: TrajectoryPoint[];
+}
+
+export type TableData = Record<string, any>[];
+
+interface WelcomeData {
+  type: VisualizationType.WELCOME;
+  title: string;
+  data: null;
+}
+
+interface LoadingData {
+  type: VisualizationType.LOADING;
+  title: string;
+  data: null;
+}
+
+interface ProfileChart {
   type: VisualizationType.PROFILE_CHART;
   title: string;
   data: ProfileChartData[];
@@ -63,38 +87,26 @@ interface ProfileChartVisualization {
   yAxisLabel?: string;
 }
 
-interface TimeSeriesChartVisualization {
-    type: VisualizationType.TIME_SERIES_CHART;
-    title: string;
-    data: TimeSeriesChartData[];
-    xAxisLabel?: string;
-    yAxisLabel?: string;
-}
-
-interface MapVisualization {
-  type: VisualizationType.MAP;
+interface TimeSeriesChart {
+  type: VisualizationType.TIME_SERIES_CHART;
   title: string;
-  data: MapData[];
+  data: TimeSeriesChartData[];
+  xAxisLabel?: string;
+  yAxisLabel?: string;
 }
 
-interface TrajectoryMapVisualization {
-    type: VisualizationType.TRAJECTORY_MAP;
-    title: string;
-    data: Trajectory[];
-}
-
-interface DensityMapVisualization {
-    type: VisualizationType.DENSITY_MAP;
-    title: string;
-    data: DensityMapData[];
-}
-
-interface MapComparisonData {
+interface Map {
+    type: VisualizationType.MAP;
     title: string;
     data: MapData[];
 }
 
-interface MapComparisonVisualization {
+interface MapComparisonData {
+  title: string;
+  data: MapData[];
+}
+
+interface MapComparison {
     type: VisualizationType.MAP_COMPARISON;
     title: string;
     data: {
@@ -103,31 +115,31 @@ interface MapComparisonVisualization {
     };
 }
 
-interface TableVisualization {
+interface DensityMap {
+    type: VisualizationType.DENSITY_MAP;
+    title: string;
+    data: DensityMapData[];
+}
+
+interface TrajectoryMap {
+    type: VisualizationType.TRAJECTORY_MAP;
+    title: string;
+    data: Trajectory[];
+}
+
+interface TableView {
     type: VisualizationType.TABLE_VIEW;
     title: string;
     data: TableData;
 }
 
-interface LoadingVisualization {
-  type: VisualizationType.LOADING;
-  title: string;
-  data: null;
-}
-
-interface WelcomeVisualization {
-  type: VisualizationType.WELCOME;
-  title: string;
-  data: null;
-}
-
 export type VisualizationData =
-  | ProfileChartVisualization
-  | MapVisualization
-  | TimeSeriesChartVisualization
-  | MapComparisonVisualization
-  | DensityMapVisualization
-  | TrajectoryMapVisualization
-  | TableVisualization
-  | LoadingVisualization
-  | WelcomeVisualization;
+  | WelcomeData
+  | LoadingData
+  | ProfileChart
+  | TimeSeriesChart
+  | Map
+  | MapComparison
+  | DensityMap
+  | TrajectoryMap
+  | TableView;

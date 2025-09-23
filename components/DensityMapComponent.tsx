@@ -34,129 +34,135 @@ const DensityMapComponent: React.FC<DensityMapComponentProps> = ({ title, data, 
         const tooltip = select(containerRef.current).select<HTMLDivElement>('.density-tooltip');
         
         const resizeObserver = new ResizeObserver(entries => {
-            const { width } = entries[0].contentRect;
-            const height = width * 0.6; // Maintain aspect ratio
+            window.requestAnimationFrame(() => {
+                if (!Array.isArray(entries) || !entries.length) {
+                    return;
+                }
+                const { width } = entries[0].contentRect;
+                const height = width * 0.6; // Maintain aspect ratio
 
-            svg.selectAll("*").remove();
+                svg.selectAll("*").remove();
 
-            svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`)
-                .attr('role', 'img')
-                .attr('aria-label', title);
+                svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`)
+                    .attr('role', 'img')
+                    .attr('aria-label', title);
 
-            const projection = geoMercator().fitSize([width, height], world);
-            const path = geoPath().projection(projection);
+                const projection = geoMercator().fitSize([width, height], world);
+                const path = geoPath().projection(projection);
 
-            // Color scale for density
-            const colorScale = d3.scaleSequential(d3.interpolateViridis).domain([0, 1]);
+                // Color scale for density
+                const colorScale = d3.scaleSequential(d3.interpolateViridis).domain([0, 1]);
 
-            // Container for zoomable elements
-            const g = svg.append('g');
+                // Container for zoomable elements
+                const g = svg.append('g');
 
-            // Draw map
-            g.append('g')
-                .selectAll('path')
-                .data(world.features)
-                .enter().append('path')
-                .attr('d', path)
-                .attr('fill', '#1B263B')
-                .attr('stroke', '#0D1B2A');
+                // Draw map
+                g.append('g')
+                    .selectAll('path')
+                    .data(world.features)
+                    .enter().append('path')
+                    .attr('d', path)
+                    .attr('fill', '#1B263B')
+                    .attr('stroke', '#0D1B2A');
 
-            // Draw density points
-            g.append('g')
-                .selectAll('circle')
-                .data(data)
-                .enter().append('circle')
-                .attr('cx', d => projection([d.lon, d.lat])![0])
-                .attr('cy', d => projection([d.lon, d.lat])![1])
-                .attr('r', d => 2 + d.density * 5)
-                .attr('fill', d => colorScale(d.density))
-                .style('opacity', 0.7)
-                .style('mix-blend-mode', 'lighten')
-                .style('cursor', 'pointer')
-                .attr('tabindex', 0)
-                .attr('aria-label', d => `Density data point at lat ${d.lat.toFixed(2)}, lon ${d.lon.toFixed(2)} with density ${d.density.toFixed(3)}`)
-                .on('mouseover', (event, d) => {
-                    tooltip
-                        .style('opacity', 1)
-                        .html(`
-                            <strong>Lat:</strong> ${d.lat.toFixed(4)}<br/>
-                            <strong>Lon:</strong> ${d.lon.toFixed(4)}<br/>
-                            <strong>Density:</strong> ${d.density.toFixed(3)}
-                        `);
-                })
-                .on('mousemove', (event) => {
-                    const [x, y] = d3.pointer(event, containerRef.current);
-                    tooltip
-                        .style('left', `${x + 15}px`)
-                        .style('top', `${y - 10}px`);
-                })
-                .on('mouseout', () => {
-                    tooltip.style('opacity', 0);
-                })
-                .on('click', (event, d) => {
-                    setSelectedPoint(d);
-                })
-                .on('keydown', (event, d) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
+                // Draw density points
+                g.append('g')
+                    .selectAll('circle')
+                    .data(data)
+                    .enter().append('circle')
+                    .attr('cx', d => projection([d.lon, d.lat])![0])
+                    .attr('cy', d => projection([d.lon, d.lat])![1])
+                    .attr('r', d => 2 + d.density * 5)
+                    .attr('fill', d => colorScale(d.density))
+                    .style('opacity', 0.7)
+                    .style('mix-blend-mode', 'lighten')
+                    .style('cursor', 'pointer')
+                    .attr('tabindex', 0)
+                    .attr('aria-label', d => `Density data point at lat ${d.lat.toFixed(2)}, lon ${d.lon.toFixed(2)} with density ${d.density.toFixed(3)}`)
+                    .on('mouseover', (event, d) => {
+                        tooltip
+                            .style('opacity', 1)
+                            .html(`
+                                <strong>Lat:</strong> ${d.lat.toFixed(4)}<br/>
+                                <strong>Lon:</strong> ${d.lon.toFixed(4)}<br/>
+                                <strong>Density:</strong> ${d.density.toFixed(3)}
+                            `);
+                    })
+                    .on('mousemove', (event) => {
+                        const [x, y] = d3.pointer(event, containerRef.current);
+                        tooltip
+                            .style('left', `${x + 15}px`)
+                            .style('top', `${y - 10}px`);
+                    })
+                    .on('mouseout', () => {
+                        tooltip.style('opacity', 0);
+                    })
+                    .on('click', (event, d) => {
                         setSelectedPoint(d);
-                    }
-                });
+                    })
+                    .on('keydown', (event, d) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            setSelectedPoint(d);
+                        }
+                    });
 
-            // Add Legend
-            const legendWidth = 200;
-            const legendHeight = 10;
-            const legendX = width - legendWidth - 20;
-            const legendY = height - legendHeight - 20;
+                // Add Legend
+                const legendWidth = 200;
+                const legendHeight = 10;
+                const legendX = width - legendWidth - 20;
+                const legendY = height - legendHeight - 20;
 
-            const legend = svg.append('g')
-                .attr('transform', `translate(${legendX}, ${legendY})`);
+                const legend = svg.append('g')
+                    .attr('transform', `translate(${legendX}, ${legendY})`);
 
-            const gradient = legend.append('defs')
-                .append('linearGradient')
-                .attr('id', 'density-gradient')
-                .attr('x1', '0%')
-                .attr('y1', '0%')
-                .attr('x2', '100%')
-                .attr('y2', '0%');
+                const gradient = legend.append('defs')
+                    .append('linearGradient')
+                    .attr('id', 'density-gradient')
+                    .attr('x1', '0%')
+                    .attr('y1', '0%')
+                    .attr('x2', '100%')
+                    .attr('y2', '0%');
 
-            for (let i = 0; i <= 1; i += 0.1) {
-                gradient.append('stop')
-                    .attr('offset', `${i * 100}%`)
-                    .attr('stop-color', colorScale(i));
-            }
+                for (let i = 0; i <= 1; i += 0.1) {
+                    gradient.append('stop')
+                        .attr('offset', `${i * 100}%`)
+                        .attr('stop-color', colorScale(i));
+                }
 
-            legend.append('rect')
-                .attr('width', legendWidth)
-                .attr('height', legendHeight)
-                .style('fill', 'url(#density-gradient)');
+                legend.append('rect')
+                    .attr('width', legendWidth)
+                    .attr('height', legendHeight)
+                    .style('fill', 'url(#density-gradient)');
 
-            legend.append('text')
-                .attr('x', 0)
-                .attr('y', legendHeight + 15)
-                .attr('fill', '#E0E1DD')
-                .attr('font-size', '12px')
-                .text('Low Density');
-            
-            legend.append('text')
-                .attr('x', legendWidth)
-                .attr('y', legendHeight + 15)
-                .attr('fill', '#E0E1DD')
-                .attr('font-size', '12px')
-                .attr('text-anchor', 'end')
-                .text('High Density');
+                legend.append('text')
+                    .attr('x', 0)
+                    .attr('y', legendHeight + 15)
+                    .attr('fill', '#E0E1DD')
+                    .attr('font-size', '12px')
+                    .text('Low Density');
+                
+                legend.append('text')
+                    .attr('x', legendWidth)
+                    .attr('y', legendHeight + 15)
+                    .attr('fill', '#E0E1DD')
+                    .attr('font-size', '12px')
+                    .attr('text-anchor', 'end')
+                    .text('High Density');
 
-            // Zoom functionality
-            const zoom = d3.zoom<SVGSVGElement, unknown>()
-                .scaleExtent([1, 8])
-                .on('zoom', (event) => {
-                    g.attr('transform', event.transform.toString());
-                });
+                // Zoom functionality
+                const zoom = d3.zoom<SVGSVGElement, unknown>()
+                    .scaleExtent([1, 8])
+                    .on('zoom', (event) => {
+                        g.attr('transform', event.transform.toString());
+                    });
 
-            svg.call(zoom);
+                svg.call(zoom);
+            });
         });
 
-        resizeObserver.observe(containerRef.current);
+        const currentContainer = containerRef.current;
+        resizeObserver.observe(currentContainer);
         return () => resizeObserver.disconnect();
 
     }, [data, world, title]);

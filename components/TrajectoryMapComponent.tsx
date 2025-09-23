@@ -39,96 +39,102 @@ const TrajectoryMapComponent: React.FC<TrajectoryMapComponentProps> = ({ title, 
         const tooltip = d3.select(containerRef.current).select<HTMLDivElement>('.map-tooltip');
         
         const resizeObserver = new ResizeObserver(entries => {
-            const { width } = entries[0].contentRect;
-            const height = width * 0.6;
+            window.requestAnimationFrame(() => {
+                if (!Array.isArray(entries) || !entries.length) {
+                    return;
+                }
+                const { width } = entries[0].contentRect;
+                const height = width * 0.6;
 
-            svg.selectAll("*").remove();
-            svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`)
-                .attr('role', 'img')
-                .attr('aria-label', title);
+                svg.selectAll("*").remove();
+                svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`)
+                    .attr('role', 'img')
+                    .attr('aria-label', title);
 
-            const projection = d3.geoMercator().fitSize([width, height], world);
-            const pathGenerator = d3.geoPath().projection(projection);
+                const projection = d3.geoMercator().fitSize([width, height], world);
+                const pathGenerator = d3.geoPath().projection(projection);
 
-            const g = svg.append('g');
+                const g = svg.append('g');
 
-            g.append('g')
-                .selectAll('path')
-                .data(world.features)
-                .enter().append('path')
-                .attr('d', pathGenerator)
-                .attr('fill', '#1B263B')
-                .attr('stroke', '#0D1B2A');
+                g.append('g')
+                    .selectAll('path')
+                    .data(world.features)
+                    .enter().append('path')
+                    .attr('d', pathGenerator)
+                    .attr('fill', '#1B263B')
+                    .attr('stroke', '#0D1B2A');
 
-            const lineGenerator = d3.line<{ lat: number; lon: number }>()
-                .x(d => projection([d.lon, d.lat])![0])
-                .y(d => projection([d.lon, d.lat])![1]);
+                const lineGenerator = d3.line<{ lat: number; lon: number }>()
+                    .x(d => projection([d.lon, d.lat])![0])
+                    .y(d => projection([d.lon, d.lat])![1]);
 
-            // Draw trajectories
-            g.append('g')
-                .selectAll('.trajectory-path')
-                .data(data)
-                .enter().append('path')
-                .attr('class', 'trajectory-path')
-                .attr('d', d => lineGenerator(d.path))
-                .attr('stroke', '#00BFFF')
-                .attr('stroke-width', 2)
-                .attr('fill', 'none')
-                .style('opacity', 0.7);
+                // Draw trajectories
+                g.append('g')
+                    .selectAll('.trajectory-path')
+                    .data(data)
+                    .enter().append('path')
+                    .attr('class', 'trajectory-path')
+                    .attr('d', d => lineGenerator(d.path))
+                    .attr('stroke', '#00BFFF')
+                    .attr('stroke-width', 2)
+                    .attr('fill', 'none')
+                    .style('opacity', 0.7);
 
-            // Flatten data for points
-            const allPoints: TrajectoryPoint[] = data.flatMap(traj => traj.path.map(p => ({ ...p, id: traj.id })));
-            
-            // Draw points on trajectories
-            g.append('g')
-                .selectAll('circle')
-                .data(allPoints)
-                .enter().append('circle')
-                .attr('cx', d => projection([d.lon, d.lat])![0])
-                .attr('cy', d => projection([d.lon, d.lat])![1])
-                .attr('r', 3)
-                .attr('fill', '#4DB6AC') // accent-teal
-                .attr('stroke', '#0D1B2A')
-                .style('cursor', 'pointer')
-                .attr('tabindex', 0)
-                .attr('aria-label', d => `Trajectory point for float ${d.id} at ${new Date(d.timestamp).toLocaleString()}`)
-                .on('mouseover', (event, d) => {
-                    tooltip
-                        .style('opacity', 1)
-                        .html(`
-                            <strong>ID:</strong> ${d.id}<br/>
-                            <strong>Lat:</strong> ${d.lat.toFixed(4)}<br/>
-                            <strong>Lon:</strong> ${d.lon.toFixed(4)}<br/>
-                            <strong>Time:</strong> ${new Date(d.timestamp).toLocaleString()}
-                        `);
-                })
-                .on('mousemove', (event) => {
-                    const [x, y] = d3.pointer(event, containerRef.current);
-                    tooltip.style('left', `${x + 15}px`).style('top', `${y - 10}px`);
-                })
-                .on('mouseout', () => {
-                    tooltip.style('opacity', 0);
-                })
-                .on('click', (event, d) => {
-                    setSelectedPoint(d);
-                })
-                .on('keydown', (event, d) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
+                // Flatten data for points
+                const allPoints: TrajectoryPoint[] = data.flatMap(traj => traj.path.map(p => ({ ...p, id: traj.id })));
+                
+                // Draw points on trajectories
+                g.append('g')
+                    .selectAll('circle')
+                    .data(allPoints)
+                    .enter().append('circle')
+                    .attr('cx', d => projection([d.lon, d.lat])![0])
+                    .attr('cy', d => projection([d.lon, d.lat])![1])
+                    .attr('r', 3)
+                    .attr('fill', '#4DB6AC') // accent-teal
+                    .attr('stroke', '#0D1B2A')
+                    .style('cursor', 'pointer')
+                    .attr('tabindex', 0)
+                    .attr('aria-label', d => `Trajectory point for float ${d.id} at ${new Date(d.timestamp).toLocaleString()}`)
+                    .on('mouseover', (event, d) => {
+                        tooltip
+                            .style('opacity', 1)
+                            .html(`
+                                <strong>ID:</strong> ${d.id}<br/>
+                                <strong>Lat:</strong> ${d.lat.toFixed(4)}<br/>
+                                <strong>Lon:</strong> ${d.lon.toFixed(4)}<br/>
+                                <strong>Time:</strong> ${new Date(d.timestamp).toLocaleString()}
+                            `);
+                    })
+                    .on('mousemove', (event) => {
+                        const [x, y] = d3.pointer(event, containerRef.current);
+                        tooltip.style('left', `${x + 15}px`).style('top', `${y - 10}px`);
+                    })
+                    .on('mouseout', () => {
+                        tooltip.style('opacity', 0);
+                    })
+                    .on('click', (event, d) => {
                         setSelectedPoint(d);
-                    }
-                });
+                    })
+                    .on('keydown', (event, d) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            setSelectedPoint(d);
+                        }
+                    });
 
-            const zoom = d3.zoom<SVGSVGElement, unknown>()
-                .scaleExtent([1, 8])
-                .on('zoom', (event) => {
-                    g.attr('transform', event.transform.toString());
-                });
+                const zoom = d3.zoom<SVGSVGElement, unknown>()
+                    .scaleExtent([1, 8])
+                    .on('zoom', (event) => {
+                        g.attr('transform', event.transform.toString());
+                    });
 
-            svg.call(zoom);
+                svg.call(zoom);
+            });
         });
-
-        resizeObserver.observe(containerRef.current);
+        
+        const currentContainer = containerRef.current;
+        resizeObserver.observe(currentContainer);
         return () => resizeObserver.disconnect();
 
     }, [data, world, title]);

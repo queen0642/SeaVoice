@@ -7,9 +7,11 @@ interface ChatPanelProps {
   messages: Message[];
   isLoading: boolean;
   onSendMessage: (message: string) => void;
+  welcomeComponent?: React.ReactNode;
+  showTitle?: boolean;
 }
 
-const ChatPanel: React.FC<ChatPanelProps> = ({ messages, isLoading, onSendMessage }) => {
+const ChatPanel: React.FC<ChatPanelProps> = ({ messages, isLoading, onSendMessage, welcomeComponent, showTitle = true }) => {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -31,31 +33,35 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages, isLoading, onSendMessag
 
   return (
     <div className="flex flex-col flex-1 p-4 min-h-0">
-      <h2 className="text-lg font-semibold mb-4 text-sea-foam border-b border-accent-cyan/20 pb-2">Chat</h2>
+      {showTitle && <h2 className="text-lg font-semibold mb-4 text-sea-foam border-b border-accent-cyan/20 pb-2">Chat</h2>}
       <div className="flex-1 overflow-y-auto pr-2 space-y-4">
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`flex items-start gap-3 ${
-              msg.sender === 'user' ? 'justify-end' : 'justify-start'
-            }`}
-          >
-            {msg.sender === 'ai' && (
-              <div className="w-8 h-8 rounded-full bg-accent-teal flex items-center justify-center flex-shrink-0 mt-1 shadow-lg shadow-cyan-glow">
-                <IconSparkles className="w-5 h-5 text-deep-ocean" />
-              </div>
-            )}
+        {messages.length === 0 && !isLoading && welcomeComponent ? (
+          welcomeComponent
+        ) : (
+          messages.map((msg) => (
             <div
-              className={`max-w-xs md:max-w-sm lg:max-w-md p-3 rounded-lg shadow-md ${
-                msg.sender === 'user'
-                  ? 'bg-accent-cyan text-deep-ocean rounded-br-none'
-                  : 'bg-accent-teal/80 text-sea-foam rounded-bl-none'
+              key={msg.id}
+              className={`flex items-start gap-3 ${
+                msg.sender === 'user' ? 'justify-end' : 'justify-start'
               }`}
             >
-              <p className="text-sm font-medium whitespace-pre-wrap">{msg.text || <span className="inline-flex items-center"><LoadingSpinner size="sm"/></span>}</p>
+              {msg.sender === 'ai' && (
+                <div className="w-8 h-8 rounded-full bg-accent-teal flex items-center justify-center flex-shrink-0 mt-1 shadow-lg shadow-cyan-glow">
+                  <IconSparkles className="w-5 h-5 text-deep-ocean" />
+                </div>
+              )}
+              <div
+                className={`max-w-xs md:max-w-sm lg:max-w-md p-3 rounded-lg shadow-md ${
+                  msg.sender === 'user'
+                    ? 'bg-accent-cyan text-deep-ocean rounded-br-none'
+                    : 'bg-accent-teal/80 text-sea-foam rounded-bl-none'
+                }`}
+              >
+                <p className="text-sm font-medium whitespace-pre-wrap">{msg.text || <span className="inline-flex items-center"><LoadingSpinner size="sm"/></span>}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
         <div ref={messagesEndRef} />
       </div>
       <div className="mt-4 border-t border-accent-cyan/20 pt-4">

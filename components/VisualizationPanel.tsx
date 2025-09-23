@@ -6,7 +6,7 @@ import MapComparisonComponent from './MapComparisonComponent';
 import DensityMapComponent from './DensityMapComponent';
 import TrajectoryMapComponent from './TrajectoryMapComponent';
 import TableComponent from './TableComponent';
-import { IconSparkles, IconWave, IconDownload } from './ui/Icon';
+import { IconSparkles, IconGlobe } from './ui/Icon';
 import LoadingSpinner from './ui/LoadingSpinner';
 
 interface VisualizationPanelProps {
@@ -16,7 +16,7 @@ interface VisualizationPanelProps {
 
 const WelcomeScreen: React.FC<{ title: string }> = ({ title }) => (
   <div className="flex flex-col items-center justify-center h-full text-center p-8">
-    <IconWave className="w-24 h-24 text-accent-cyan mb-6" />
+    <IconGlobe className="w-24 h-24 text-accent-cyan mb-6" />
     <h2 className="text-3xl font-bold mb-2 text-sea-foam">{title}</h2>
     <p className="text-slate-gray max-w-md">
       I'm Sea Voice, your AI assistant for ARGO ocean data. Ask me to visualize data from oceans around the world.
@@ -42,67 +42,12 @@ const LoadingScreen: React.FC<{ title: string }> = ({ title }) => (
     </div>
 );
 
-// Helper to convert array of objects to CSV
-const convertToCSV = (data: any[]): string => {
-    if (!data || data.length === 0) return '';
-    const headers = Object.keys(data[0]);
-    const csvRows = [
-        headers.join(','), // header row
-        ...data.map(row => 
-            headers.map(fieldName => 
-                // Handle objects by JSON stringifying them, otherwise just use the value
-                typeof row[fieldName] === 'object' && row[fieldName] !== null 
-                ? JSON.stringify(row[fieldName]) 
-                : JSON.stringify(row[fieldName], (key, value) => value === null ? '' : value)
-            ).join(',')
-        )
-    ];
-    return csvRows.join('\r\n');
-};
 
 const VisualizationPanel: React.FC<VisualizationPanelProps> = ({ visualization, summary }) => {
   
   const isDataVisualization = visualization.type !== VisualizationType.WELCOME &&
                                 visualization.type !== VisualizationType.LOADING &&
                                 !!visualization.data;
-
-  const handleDownload = () => {
-    if (!isDataVisualization || !visualization.data) return;
-
-    let dataToConvert: any[] = [];
-    
-    // Normalize complex data structures for CSV
-    switch(visualization.type) {
-        case VisualizationType.MAP_COMPARISON:
-            dataToConvert = [
-                ...visualization.data.mapA.data.map(d => ({...d, source: visualization.data.mapA.title})),
-                ...visualization.data.mapB.data.map(d => ({...d, source: visualization.data.mapB.title}))
-            ];
-            break;
-        case VisualizationType.TRAJECTORY_MAP:
-             dataToConvert = visualization.data.flatMap(traj => 
-                traj.path.map(p => ({ float_id: traj.id, lat: p.lat, lon: p.lon, timestamp: p.timestamp }))
-            );
-            break;
-        default:
-             dataToConvert = visualization.data as any[];
-    }
-    
-    if (dataToConvert.length === 0) return;
-
-    const csvData = convertToCSV(dataToConvert);
-    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    if (link.download !== undefined) {
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', `${visualization.title.replace(/[\s/]/g, '_')}.csv`);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-  };
 
 
   const showSummary = summary && isDataVisualization;
@@ -142,17 +87,6 @@ const VisualizationPanel: React.FC<VisualizationPanelProps> = ({ visualization, 
                     </h4>
                     <p className="text-sm text-sea-foam whitespace-pre-wrap">{summary}</p>
                 </div>
-            )}
-            {isDataVisualization && (
-                 <button
-                    onClick={handleDownload}
-                    className="ml-4 p-2 bg-accent-teal rounded-lg hover:bg-teal-400 disabled:bg-slate-gray/50 transition-all duration-300 transform hover:scale-105 shadow-md flex items-center"
-                    title="Download data as CSV"
-                    aria-label="Download visualization data as CSV"
-                >
-                    <IconDownload className="w-5 h-5 text-white" />
-                    <span className="ml-2 text-sm text-white font-semibold">Export CSV</span>
-                </button>
             )}
        </div>
       <div className="flex-grow min-h-0">

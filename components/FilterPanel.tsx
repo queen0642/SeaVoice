@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFilter, IconCalendar, IconGlobe } from './ui/Icon';
+import { IconFilter, IconCalendar, IconGlobe, IconRuler, IconId } from './ui/Icon';
 import { Filters } from '../types';
 
 interface FilterPanelProps {
@@ -15,12 +15,15 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChange }) =>
     });
   };
 
-  const handleSensorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    onFilterChange({ ...filters, sensorType: e.target.value });
+   const handleDepthChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'min' | 'max') => {
+    onFilterChange({
+      ...filters,
+      depthRange: { ...filters.depthRange, [field]: e.target.value },
+    });
   };
-  
-  const handleRegionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    onFilterChange({ ...filters, region: e.target.value });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    onFilterChange({ ...filters, [e.target.name]: e.target.value });
   };
 
   return (
@@ -31,14 +34,15 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChange }) =>
       </h2>
       <div className="space-y-4">
         <div>
-          <label htmlFor="region-select" className="text-sm font-medium text-slate-gray flex items-center mb-1">
+          <label htmlFor="region" className="text-sm font-medium text-slate-gray flex items-center mb-1">
             <IconGlobe className="w-4 h-4 mr-2" />
             Region
           </label>
            <select
-            id="region-select"
+            id="region"
+            name="region"
             value={filters.region}
-            onChange={handleRegionChange}
+            onChange={handleInputChange}
             className="w-full p-2 bg-deep-ocean border border-accent-cyan/30 text-sea-foam text-sm rounded-lg focus:ring-2 focus:ring-accent-cyan focus:outline-none"
             aria-label="Filter data by geographic region"
           >
@@ -75,14 +79,40 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChange }) =>
             />
           </div>
         </div>
+         <div>
+          <label className="text-sm font-medium text-slate-gray flex items-center mb-1">
+            <IconRuler className="w-4 h-4 mr-2" />
+            Depth Range (m)
+          </label>
+          <div className="flex items-center space-x-2">
+            <input
+              type="number"
+              placeholder="Min"
+              aria-label="Minimum depth in meters"
+              value={filters.depthRange.min}
+              onChange={(e) => handleDepthChange(e, 'min')}
+              className="w-full p-2 bg-deep-ocean border border-accent-cyan/30 text-sea-foam text-sm rounded-lg focus:ring-2 focus:ring-accent-cyan focus:outline-none"
+            />
+            <span className="text-slate-gray">-</span>
+            <input
+              type="number"
+              placeholder="Max"
+              aria-label="Maximum depth in meters"
+              value={filters.depthRange.max}
+              onChange={(e) => handleDepthChange(e, 'max')}
+              className="w-full p-2 bg-deep-ocean border border-accent-cyan/30 text-sea-foam text-sm rounded-lg focus:ring-2 focus:ring-accent-cyan focus:outline-none"
+            />
+          </div>
+        </div>
         <div>
-          <label htmlFor="sensor-type" className="text-sm font-medium text-slate-gray block mb-1">
+          <label htmlFor="sensorType" className="text-sm font-medium text-slate-gray block mb-1">
             Sensor Type
           </label>
           <select
-            id="sensor-type"
+            id="sensorType"
+            name="sensorType"
             value={filters.sensorType}
-            onChange={handleSensorChange}
+            onChange={handleInputChange}
             className="w-full p-2 bg-deep-ocean border border-accent-cyan/30 text-sea-foam text-sm rounded-lg focus:ring-2 focus:ring-accent-cyan focus:outline-none"
             aria-label="Filter data by sensor type"
           >
@@ -94,6 +124,22 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChange }) =>
             <option value="nitrate">Nitrate</option>
             <option value="ph">pH</option>
           </select>
+        </div>
+         <div>
+          <label htmlFor="floatId" className="text-sm font-medium text-slate-gray flex items-center mb-1">
+            <IconId className="w-4 h-4 mr-2" />
+            Float ID
+          </label>
+           <input
+              id="floatId"
+              name="floatId"
+              type="text"
+              placeholder="e.g., 12345"
+              aria-label="Specific ARGO float ID"
+              value={filters.floatId}
+              onChange={handleInputChange}
+              className="w-full p-2 bg-deep-ocean border border-accent-cyan/30 text-sea-foam text-sm rounded-lg focus:ring-2 focus:ring-accent-cyan focus:outline-none"
+            />
         </div>
       </div>
     </div>
