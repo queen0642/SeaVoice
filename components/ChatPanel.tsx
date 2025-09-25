@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Message } from '../types';
-import { IconSend, IconSparkles } from './ui/Icon';
+import { Message, Filters } from '../types';
+import { IconSend, IconSparkles, IconFilter } from './ui/Icon';
 import LoadingSpinner from './ui/LoadingSpinner';
 
 interface ChatPanelProps {
@@ -9,9 +9,10 @@ interface ChatPanelProps {
   onSendMessage: (message: string) => void;
   welcomeComponent?: React.ReactNode;
   showTitle?: boolean;
+  activeFilters?: Filters;
 }
 
-const ChatPanel: React.FC<ChatPanelProps> = ({ messages, isLoading, onSendMessage, welcomeComponent, showTitle = true }) => {
+const ChatPanel: React.FC<ChatPanelProps> = ({ messages, isLoading, onSendMessage, welcomeComponent, showTitle = true, activeFilters }) => {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -30,6 +31,19 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages, isLoading, onSendMessag
       setInput('');
     }
   };
+  
+  const getActiveFilterSummary = (): string[] => {
+    if (!activeFilters) return [];
+    const summary: string[] = [];
+    if (activeFilters.region && activeFilters.region !== 'all') summary.push(activeFilters.region);
+    if (activeFilters.sensorType && activeFilters.sensorType !== 'all') summary.push(activeFilters.sensorType);
+    if (activeFilters.floatId) summary.push(`ID: ${activeFilters.floatId}`);
+    if (activeFilters.dateRange.start || activeFilters.dateRange.end) summary.push('Date Range');
+    if (activeFilters.depthRange.min || activeFilters.depthRange.max) summary.push('Depth Range');
+    return summary;
+  };
+
+  const activeFilterItems = getActiveFilterSummary();
 
   return (
     <div className="flex flex-col flex-1 p-4 min-h-0">
@@ -65,12 +79,23 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages, isLoading, onSendMessag
         <div ref={messagesEndRef} />
       </div>
       <div className="mt-4 border-t border-accent-cyan/20 pt-4">
+        {activeFilterItems.length > 0 && (
+          <div className="mb-2 text-xs text-slate-gray flex items-center flex-wrap gap-x-2 gap-y-1" aria-live="polite">
+            <IconFilter className="w-3 h-3 mr-1 flex-shrink-0 text-accent-cyan" />
+            <span className="font-semibold text-sea-foam">Filters Active:</span>
+            {activeFilterItems.map((item, index) => (
+              <span key={index} className="bg-ocean-blue px-2 py-0.5 rounded-full border border-accent-cyan/30">
+                {item}
+              </span>
+            ))}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="flex items-center space-x-2">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about ocean data..."
+            placeholder={activeFilterItems.length > 0 ? "Ask with active filters..." : "Ask about ocean data..."}
             className="flex-1 p-2 bg-deep-ocean border border-accent-cyan/30 text-sea-foam rounded-lg focus:ring-2 focus:ring-accent-cyan focus:outline-none transition-shadow"
             disabled={isLoading}
             aria-label="Chat input for asking about ocean data"

@@ -217,7 +217,7 @@ const DataExplorerPage: React.FC<DataExplorerPageProps> = ({ onGoHome, onNavigat
     };
 
     return (
-        <div className="flex flex-col h-screen text-sea-foam font-sans">
+        <div className="flex flex-col min-h-screen text-sea-foam font-sans">
             <Header
                 language={language}
                 setLanguage={setLanguage}
@@ -237,7 +237,12 @@ const DataExplorerPage: React.FC<DataExplorerPageProps> = ({ onGoHome, onNavigat
                         isVizExportable={!!visualization.data}
                     />
                     <div className="flex-1 min-h-0">
-                      <ChatPanel messages={messages} isLoading={isLoading} onSendMessage={handleSendMessage} />
+                      <ChatPanel 
+                        messages={messages} 
+                        isLoading={isLoading} 
+                        onSendMessage={handleSendMessage} 
+                        activeFilters={filters} 
+                      />
                     </div>
                 </aside>
                 <main className="flex-1 min-w-0">

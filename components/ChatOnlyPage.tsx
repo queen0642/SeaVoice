@@ -111,7 +111,7 @@ const ChatOnlyPage: React.FC<ChatOnlyPageProps> = ({ onGoHome, onNavigate, curre
   );
 
   return (
-    <div className="flex flex-col h-screen text-sea-foam font-sans">
+    <div className="flex flex-col min-h-screen text-sea-foam font-sans">
       <Header
         language={language}
         setLanguage={setLanguage}
