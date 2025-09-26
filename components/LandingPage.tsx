@@ -39,7 +39,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartExplorer, onStartChat,
                 </button>
                  <button
                     onClick={onStartGame}
-                    className="flex items-center justify-center gap-2 px-8 py-4 bg-sea-foam text-deep-ocean font-bold rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:bg-white"
+                    className="flex items-center justify-center gap-2 px-8 py-4 bg-accent-cyan text-deep-ocean font-bold rounded-lg shadow-lg shadow-cyan-glow transform transition-transform duration-300 hover:scale-105 hover:bg-cyan-400"
                 >
                     <IconTrophy className="w-6 h-6" />
                     <span>Ocean Trivia</span>

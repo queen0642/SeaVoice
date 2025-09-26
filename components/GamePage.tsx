@@ -9,7 +9,7 @@ interface GamePageProps {
   currentPage: 'game';
 }
 
-type GameID = 'trivia' | 'deep_sea_dash' | 'argo_adventure' | 'ocean_memory';
+type GameID = 'trivia' | 'spot_the_species' | 'argo_adventure' | 'ocean_memory';
 
 const GamePage: React.FC<GamePageProps> = ({ onGoHome, onNavigate, currentPage }) => {
   const [language, setLanguage] = useState('en');
@@ -19,7 +19,7 @@ const GamePage: React.FC<GamePageProps> = ({ onGoHome, onNavigate, currentPage }
     { id: 'trivia', name: 'Ocean Trivia', icon: <IconTrophy className="w-5 h-5 mr-3" /> },
     { id: 'argo_adventure', name: 'Argo Float Adventure', icon: <IconMapPin className="w-5 h-5 mr-3" />, disabled: true },
     { id: 'ocean_memory', name: 'Ocean Memory Game', icon: <IconLightbulb className="w-5 h-5 mr-3" />, disabled: true },
-    { id: 'deep_sea_dash', name: 'Deep Sea Dash', icon: <IconWave className="w-5 h-5 mr-3" />, disabled: true },
+    { id: 'spot_the_species', name: 'Spot the Species', icon: <IconWave className="w-5 h-5 mr-3" />, disabled: true },
   ];
 
   const renderSelectedGame = () => {
@@ -44,12 +44,12 @@ const GamePage: React.FC<GamePageProps> = ({ onGoHome, onNavigate, currentPage }
             </p>
           </div>
         );
-      case 'deep_sea_dash':
+      case 'spot_the_species':
         return (
           <div className="w-full h-full flex flex-col items-center justify-center text-center p-8">
             <h2 className="text-3xl font-bold text-sea-foam">Coming Soon!</h2>
             <p className="text-slate-gray mt-4 max-w-md">
-              "Deep Sea Dash" is an upcoming adventure where you'll navigate an ARGO float through treacherous underwater canyons. Stay tuned!
+              "Spot the Species" is a future game where you will identify different marine creatures from images and data signatures. Sharpen your eyes and become a marine biologist!
             </p>
           </div>
         );
