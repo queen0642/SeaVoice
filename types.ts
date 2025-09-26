@@ -18,7 +18,7 @@ export interface Filters {
   floatId: string;
 }
 
-export type Persona = 'ocean_expert' | 'summarizer' | 'conversational_expert';
+export type Persona = 'ocean_expert' | 'summarizer' | 'conversational_expert' | 'game_master';
 
 export enum VisualizationType {
   WELCOME = 'welcome',

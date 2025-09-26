@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import LandingPage from './components/LandingPage';
 import DataExplorerPage from './components/DataExplorerPage';
 import ChatOnlyPage from './components/ChatOnlyPage';
+import GamePage from './components/GamePage';
 
-type Page = 'landing' | 'explorer' | 'chat';
+type Page = 'landing' | 'explorer' | 'chat' | 'game';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('landing');
 
-  const handleNavigate = (page: 'explorer' | 'chat') => {
+  const handleNavigate = (page: 'explorer' | 'chat' | 'game') => {
     setCurrentPage(page);
   };
 
@@ -30,12 +31,21 @@ const App: React.FC = () => {
             currentPage="chat"
           />
         );
+      case 'game':
+        return (
+          <GamePage
+            onGoHome={() => setCurrentPage('landing')}
+            onNavigate={handleNavigate}
+            currentPage="game"
+          />
+        );
       case 'landing':
       default:
         return (
           <LandingPage
             onStartExplorer={() => setCurrentPage('explorer')}
             onStartChat={() => setCurrentPage('chat')}
+            onStartGame={() => setCurrentPage('game')}
           />
         );
     }

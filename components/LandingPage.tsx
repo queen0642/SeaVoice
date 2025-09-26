@@ -1,14 +1,15 @@
 import React from 'react';
-import { IconGlobe, IconSparkles } from './ui/Icon';
+import { IconGlobe, IconSparkles, IconTrophy } from './ui/Icon';
 import OceanGallery from './OceanGallery';
 import RegionalData from './RegionalData';
 
 interface LandingPageProps {
   onStartExplorer: () => void;
   onStartChat: () => void;
+  onStartGame: () => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onStartExplorer, onStartChat }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onStartExplorer, onStartChat, onStartGame }) => {
   return (
     <div className="font-sans text-sea-foam overflow-y-auto h-full">
       {/* Hero Section */}
@@ -35,6 +36,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartExplorer, onStartChat 
                 >
                     <IconSparkles className="w-6 h-6" />
                     <span>Start Summarizer</span>
+                </button>
+                 <button
+                    onClick={onStartGame}
+                    className="flex items-center justify-center gap-2 px-8 py-4 bg-sea-foam text-deep-ocean font-bold rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:bg-white"
+                >
+                    <IconTrophy className="w-6 h-6" />
+                    <span>Ocean Trivia</span>
                 </button>
             </div>
         </div>

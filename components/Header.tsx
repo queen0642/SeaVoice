@@ -5,8 +5,8 @@ interface HeaderProps {
     language: string;
     setLanguage: (lang: string) => void;
     onGoHome: () => void;
-    onNavigate?: (page: 'explorer' | 'chat') => void;
-    currentPage?: 'explorer' | 'chat';
+    onNavigate?: (page: 'explorer' | 'chat' | 'game') => void;
+    currentPage?: 'explorer' | 'chat' | 'game';
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -49,6 +49,17 @@ const Header: React.FC<HeaderProps> = ({
                                 aria-current={currentPage === 'chat' ? 'page' : undefined}
                             >
                                 Summarizer
+                            </button>
+                             <button
+                                onClick={() => onNavigate('game')}
+                                className={`px-3 py-1.5 text-sm font-semibold rounded-md transition-colors ${
+                                    currentPage === 'game'
+                                    ? 'bg-accent-cyan text-deep-ocean'
+                                    : 'text-sea-foam hover:bg-ocean-blue'
+                                }`}
+                                aria-current={currentPage === 'game' ? 'page' : undefined}
+                            >
+                                Games
                             </button>
                         </nav>
                     )}
